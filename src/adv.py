@@ -39,37 +39,66 @@ room['treasure'].s_to = room['narrow']
 
 # Make a new player object that is currently in the 'outside' room.
 
-oscar = Player("Oscar", "outside")
+oscar = Player("Oscar", room['outside'])
 
+direction = ["n", "s", "e", "w"]
 # Write a loop that:
 #
+move = " "
+while move not in direction:
 # * Prints the current room name
-# print(oscar.current_room)
+    print(oscar.current_room.name)
 # * Prints the current description (the textwrap module might be useful here).
-# print(room[oscar.current_room].description)
+    print(oscar.current_room.description)
 # * Waits for user input and decides what to do.
-# move = input("Which direction would you like to travel: ")
+    move = input("Which direction would you like to travel?: ")
 
 # If the user enters a cardinal direction, attempt to move to the room there.
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
 
-# if direction == n:
-#    check if room exsists
+    if move == "n":
+        print("You Moved North")
+#    check if room exists
+        if oscar.current_room.n_to:
 #    move to room to the north
-#    else "You can't move in that direction, no room exsists"
-# elif direction == s:
-#    check if room exsists
+            oscar.current_room = oscar.current_room.n_to
+        else: 
+            print("You can't move in that direction, no room exsists")
+        move = " "
+
+    elif move == "s":
+        print("You Moved South")
+#    check if room exists
+        if oscar.current_room.s_to:
 #    move to room to the south
-#    else "You can't move in that direction, no room exsists"
-# elif direction == e:
-#    check if room exsists
+            oscar.current_room = oscar.current_room.s_to
+        else: 
+            print("You can't move in that direction, no room exsists")
+        move = " "
+
+    elif move == "e":
+        print("You Moved East")
+#    check if room exists
+        if oscar.current_room.e_to:
 #    move to room to the east
-#    else "You can't move in that direction, no room exsists"
-# elif direction == w:
-#    check if room exsists
+            oscar.current_room = oscar.current_room.e_to
+        else: 
+            print("You can't move in that direction, no room exsists")
+        move = " "
+
+    elif move == "w":
+        print("You Moved West")
+#    check if room exists
+        if oscar.current_room.w_to:
 #    move to room to the west
-#    else "You can't move in that direction, no room exsists"
-# elif direction == q:
+            oscar.current_room = oscar.current_room.w_to
+        else: 
+            print("You can't move in that direction, no room exsists")
+        move = " "
+
+    elif move == "q":
+        print("Goodbye!")
 #    quit the game
+        quit()
