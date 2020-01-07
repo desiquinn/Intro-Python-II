@@ -51,6 +51,9 @@ while move not in direction:
     print(oscar.current_room.name)
 # * Prints the current description (the textwrap module might be useful here).
     print(oscar.current_room.description)
+    print("Items:")
+    for item in oscar.current_room.items:
+        print(item)
 # * Waits for user input and decides what to do.
     move = input("Which direction would you like to travel?: ")
 
