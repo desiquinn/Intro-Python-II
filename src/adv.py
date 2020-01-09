@@ -22,6 +22,15 @@ chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 }
 
+# Declare all items
+
+item = {
+    'potion': Item("Potion", """One drop of this postion will 
+heal you and restore all health"""),
+
+    'sword': Item("Sword", """Protect Yourself from monsters with 
+this massive sword"""),
+}
 
 # Link rooms together
 
@@ -33,6 +42,11 @@ room['overlook'].s_to = room['foyer']
 room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
+
+# Add Items to rooms
+
+room['foyer'].items.append(item['sword'])
+room['overlook'].items.append(item['potion'])
 
 #
 # Main
@@ -48,14 +62,17 @@ direction = ["n", "s", "e", "w"]
 move = " "
 while move not in direction:
 # * Prints the current room name
-    print(oscar.current_room.name)
+    print(f'\n{oscar.current_room.name}')
 # * Prints the current description (the textwrap module might be useful here).
     print(oscar.current_room.description)
-    print("Items In Room:")
-    for item in oscar.current_room.items:
-        print(item)
+    if len(oscar.current_room.items) > 0:
+        print("Items In Room:")
+        for item in oscar.current_room.items:
+            print(item)
+    else:
+        print("This room is empty")
 # * Waits for user input and decides what to do.
-    move = list(input("""\n(n) - Move North\n(s) - Move South\n(e) - Move East\n(w) - Move West\n(q) - Quit\nWhat would you like to do?: """).split())
+    move = list(input("""\n(n) - Move North\n(s) - Move South\n(e) - Move East\n(w) - Move West\n(i) - Inventory\n(q) - Quit\n\nWhat would you like to do?: """).split())
     # print(move)
 # If the user enters a cardinal direction, attempt to move to the room there.
 # Print an error message if the movement isn't allowed.
@@ -69,8 +86,7 @@ while move not in direction:
 #    move to room to the north
                 oscar.current_room = oscar.current_room.n_to
             else: 
-                print("You can't move in that direction, no room exsists")
-            move = " "
+                print("You can't move in that direction, no room exists")
 
         elif move[0] == "s":
             print("You Moved South")
@@ -79,8 +95,7 @@ while move not in direction:
 #    move to room to the south
                 oscar.current_room = oscar.current_room.s_to
             else: 
-                print("You can't move in that direction, no room exsists")
-            move = " "
+                print("You can't move in that direction, no room exists")
 
         elif move[0] == "e":
             print("You Moved East")
@@ -89,8 +104,7 @@ while move not in direction:
 #    move to room to the east
                 oscar.current_room = oscar.current_room.e_to
             else: 
-                print("You can't move in that direction, no room exsists")
-            move = " "
+                print("You can't move in that direction, no room exists")
 
         elif move[0] == "w":
             print("You Moved West")
@@ -99,10 +113,38 @@ while move not in direction:
 #    move to room to the west
                 oscar.current_room = oscar.current_room.w_to
             else: 
-                print("You can't move in that direction, no room exsists")
-            move = " "
+                print("You can't move in that direction, no room exists")
+
+        elif (move[0] == "i") or (move[0] == "inventory"):
+            print("\nInventory: ")
+            if len(oscar.inventory) > 0:
+                for item in oscar.inventory:
+                    print(item)
+            else:
+                print("Your inventory is empty")
 
         elif move[0] == "q":
             print("Goodbye!")
 #    quit the game
             quit()
+        
+        else:
+            print("I don't understand that response")
+
+    elif len(move) == 2:
+        if (move[0] == "get") or (move[0] == "take"):
+            for item in oscar.current_room.items:
+                if item.name == move[1]:
+                    oscar.inventory.append(item)
+                    oscar.current_room.items.remove(item)
+                    item.on_take()
+                else:
+                    print("No such item exists in this room")
+        elif move[0] == "drop":
+            for item in oscar.inventory:
+                if item.name == move[1]:
+                    oscar.current_room.items.append(item)
+                    oscar.inventory.remove(item)
+                    item.on_drop()
+                else:
+                    print("You don't have that item")
